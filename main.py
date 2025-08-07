@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import os
 
+
 def hash_file(path):
     hasher = hashlib.sha256()
     with open(path, 'rb') as f:
@@ -27,8 +28,11 @@ def find_duplicate_files(directory):
     duplicates = {h: paths for h, paths in hash_to_files.items() if len(paths) > 1}
     return duplicates
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Find duplicate files using SHA-256 hashing.")
+    parser = argparse.ArgumentParser(
+        description="Find duplicate files using SHA-256 hashing."
+    )
     parser.add_argument("directory", help="Path to the directory to scan")
     args = parser.parse_args()
 
@@ -43,6 +47,6 @@ def main():
             for path in paths:
                 print(f"  - {path}")
 
+
 if __name__ == "__main__":
     main()
-

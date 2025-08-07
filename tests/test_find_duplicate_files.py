@@ -3,6 +3,7 @@ import shutil
 import os
 from main import find_duplicate_files
 
+
 def test_find_duplicate_files():
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create duplicate files
@@ -26,4 +27,3 @@ def test_find_duplicate_files():
         expected = {file1, file2}
 
         assert any(expected.issubset(group) for group in all_duplicate_files)
-
