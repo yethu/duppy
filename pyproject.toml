@@ -7,7 +7,7 @@ name = "duppy"
 version = "1.0.0"
 description = "A CLI tool to find duplicate files using SHA-256"
 readme = "README.md"
-authors = []
+authors = [{name = "Ye Thu"}]
 license = { text = "MIT" }
 requires-python = ">=3.7"
 dependencies = []
