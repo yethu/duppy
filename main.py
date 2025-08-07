@@ -4,16 +4,16 @@ import hashlib
 import os
 
 
-def hash_file(path):
+def hash_file(path, chunk_size=8192):
     hasher = hashlib.sha256()
     with open(path, 'rb') as f:
-        for chunk in iter(lambda: f.read(8192), b''):
+        for chunk in iter(lambda: f.read(chunk_size), b''):
             hasher.update(chunk)
 
     return hasher.hexdigest()
 
 
-def find_duplicate_files(directory, recursive=True):
+def find_duplicate_files(directory, recursive=True, chunk_size=8192):
     hash_to_files = defaultdict(list)
 
     if recursive:
@@ -26,13 +26,21 @@ def find_duplicate_files(directory, recursive=True):
             path = os.path.join(root, name)
             if os.path.isfile(path):
                 try:
-                    file_hash = hash_file(path)
+                    file_hash = hash_file(path, chunk_size=chunk_size)
                     hash_to_files[file_hash].append(path)
                 except (PermissionError, FileNotFoundError):
                     pass
 
     duplicates = {h: paths for h, paths in hash_to_files.items() if len(paths) > 1}
     return duplicates
+
+
+def validate_positive(value):
+    v = int(value)
+    if v <= 0:
+        raise argparse.ArgumentTypeError(f"{v} is an invalid chunk size value")
+
+    return v
 
 
 def main():
@@ -44,6 +52,12 @@ def main():
         "--no-recursion",
         action="store_true",
         help="Limit the scan to top-level directories",
+    )
+    parser.add_argument(
+        "--chunk-size",
+        type=validate_positive,
+        default=8192,
+        help="Size (in bytes) of chunks to read when hashing files (default: 8192)",
     )
     args = parser.parse_args()
 
