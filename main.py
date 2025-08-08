@@ -3,8 +3,10 @@ import argparse
 import hashlib
 import os
 
+DEFAULT_CHUNK_SIZE = 8192
 
-def hash_file(path, chunk_size=8192):
+
+def hash_file(path, chunk_size=DEFAULT_CHUNK_SIZE):
     hasher = hashlib.sha256()
     with open(path, 'rb') as f:
         for chunk in iter(lambda: f.read(chunk_size), b''):
@@ -13,7 +15,7 @@ def hash_file(path, chunk_size=8192):
     return hasher.hexdigest()
 
 
-def find_duplicate_files(directory, recursive=True, chunk_size=8192):
+def find_duplicate_files(directory, recursive=True, chunk_size=DEFAULT_CHUNK_SIZE):
     hash_to_files = defaultdict(list)
 
     if recursive:
@@ -56,8 +58,8 @@ def main():
     parser.add_argument(
         "--chunk-size",
         type=validate_positive,
-        default=8192,
-        help="Size (in bytes) of chunks to read when hashing files (default: 8192)",
+        default=DEFAULT_CHUNK_SIZE,
+        help=f"Size (in bytes) of chunks to read when hashing files (default: {DEFAULT_CHUNK_SIZE})",
     )
     args = parser.parse_args()
 
